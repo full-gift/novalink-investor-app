@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#09090B">
+<title>NovaLink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#09090B!important;height:100%}
+body{background:#09090B!important;color:#EDEDEF;font-family:'Noto Sans JP',system-ui,-apple-system,sans-serif;min-height:100%;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.5}
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:#09090B;position:relative;padding-bottom:env(safe-area-inset-bottom)}
+.header{padding:calc(env(safe-area-inset-top,12px)+12px) 20px 10px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#C5963A,#DEB560);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:#0A0A0C}
+.logo-text{font-weight:700;font-size:17px;letter-spacing:-.01em}
+.portfolio{margin:16px 20px 0;background:linear-gradient(160deg,#17171C,#111114);border:1px solid #27272E;border-radius:18px;padding:24px 22px 20px;position:relative;overflow:hidden}
+.portfolio::after{content:'';position:absolute;top:-60px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(197,150,58,.06) 0%,transparent 70%);pointer-events:none}
+.pf-label{font-size:11px;font-weight:500;color:#6E6E7A;letter-spacing:.06em;margin-bottom:8px}
+.pf-amount{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.1;color:#F4F4F5}
+.pf-amount .yen{font-size:22px;font-weight:500;color:#8A8A96;margin-right:3px}
+.pf-sub{display:flex;align-items:center;gap:10px;margin-top:10px}
+.pf-gain{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#34D399}
+.pf-gain svg{width:14px;height:14px;flex-shrink:0}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 20px 0}
+.m-card{background:#111114;border:1px solid #222228;border-radius:14px;padding:16px 14px}
+.m-label{font-size:11px;font-weight:500;color:#6E6E7A;margin-bottom:6px}
+.m-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:#EDEDEF}
+.m-note{font-size:11px;color:#4ADE80;margin-top:3px;font-weight:500}
+.sec-head{padding:24px 20px 10px;font-size:14px;font-weight:700;color:#EDEDEF}
+.holding{margin:0 20px;background:#111114;border:1px solid #222228;border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px}
+.h-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#C5963A,#DEB560);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:#0A0A0C;flex-shrink:0}
+.h-info{flex:1;min-width:0}.h-name{font-size:14px;font-weight:600}.h-detail{font-size:12px;color:#6E6E7A;margin-top:2px}
+.h-right{text-align:right}.h-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600}.h-pct{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:#4ADE80;margin-top:2px}
+.order-item{margin:0 20px;padding:14px 0;border-bottom:1px solid #1A1A1F;display:flex;align-items:center;gap:12px}
+.o-badge{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.o-badge.pending{background:rgba(251,191,36,.06);color:#FBBF24}
+.o-badge.approved{background:rgba(74,222,128,.06);color:#4ADE80}
+.o-badge.rejected{background:rgba(248,113,113,.06);color:#F87171}
+.o-badge.withdraw{background:rgba(139,92,246,.06);color:#A78BFA}
+.o-info{flex:1}.o-title{font-size:13px;font-weight:600}.o-meta{font-size:11px;color:#6E6E7A;margin-top:1px}
+.o-amount{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;text-align:right}
+
+/* Bottom bar - 2 buttons */
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:10px 20px calc(10px + env(safe-area-inset-bottom));background:rgba(9,9,11,.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:1px solid #1F1F26;z-index:100;display:flex;gap:10px}
+.btn-buy{flex:1;height:50px;border:none;border-radius:13px;background:linear-gradient(135deg,#C5963A,#DEB560);color:#0A0A0C;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-appearance:none}
+.btn-buy:active{opacity:.82}
+.btn-buy svg{width:16px;height:16px;stroke-width:2}
+.btn-sell{flex:1;height:50px;border:1px solid #27272E;border-radius:13px;background:#161619;color:#EDEDEF;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-appearance:none}
+.btn-sell:active{background:#1E1E22}
+.btn-sell svg{width:16px;height:16px;stroke-width:2}
+.btn-sell:disabled{opacity:.35;cursor:default}
+
+/* Overlay & sheets */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.on{opacity:1;pointer-events:all}
+.sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:430px;background:#111114;border-top-left-radius:22px;border-top-right-radius:22px;padding:14px 20px calc(24px + env(safe-area-inset-bottom));z-index:201;transition:transform .38s cubic-bezier(.32,.72,0,1)}
+.sheet.on{transform:translateX(-50%) translateY(0)}
+.sheet-bar{width:40px;height:4px;background:#333;border-radius:2px;margin:0 auto 20px}
+.sheet-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.sheet-sub{font-size:12px;color:#6E6E7A;margin-bottom:20px}
+.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.preset{height:56px;border:1px solid #27272E;border-radius:12px;background:#161619;color:#EDEDEF;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-appearance:none;transition:all .15s}
+.preset span{font-family:'Noto Sans JP',sans-serif;font-size:11px;color:#6E6E7A;font-weight:400;margin-top:2px}
+.preset:active,.preset.on{border-color:#C5963A;background:rgba(197,150,58,.05)}
+.custom-wrap{margin-bottom:18px}
+.custom-label{font-size:12px;color:#8A8A96;margin-bottom:8px;display:block}
+.custom-input{width:100%;height:50px;padding:0 14px;background:#161619;border:1px solid #27272E;border-radius:12px;color:#EDEDEF;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;outline:none;-webkit-appearance:none}
+.custom-input:focus{border-color:#C5963A}
+.custom-input::placeholder{color:#444;font-weight:400}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;font-size:13px;border-bottom:1px solid #1A1A1F}
+.detail-row .dk{color:#6E6E7A}.detail-row .dv{font-family:'JetBrains Mono',monospace;font-weight:600}
+.confirm-btn{width:100%;height:54px;border:none;border-radius:14px;background:linear-gradient(135deg,#C5963A,#DEB560);color:#0A0A0C;font-family:'Noto Sans JP',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:14px;-webkit-appearance:none}
+.confirm-btn:active{opacity:.82}
+.confirm-btn:disabled{opacity:.35;cursor:default}
+
+/* Withdraw sheet */
+.wd-amount{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;margin:12px 0 6px;color:#F4F4F5}
+.wd-amount .yen{font-size:18px;color:#8A8A96;margin-right:2px}
+.wd-note{font-size:12px;color:#6E6E7A;margin-bottom:20px;line-height:1.6}
+.wd-btn{width:100%;height:54px;border:none;border-radius:14px;background:#A78BFA;color:#fff;font-family:'Noto Sans JP',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;-webkit-appearance:none}
+.wd-btn:active{opacity:.82}
+.wd-btn:disabled{opacity:.35;cursor:default}
+
+.toast{position:fixed;top:calc(env(safe-area-inset-top,12px)+16px);left:50%;transform:translateX(-50%) translateY(-100px);background:#111114;color:#EDEDEF;border:1px solid #27272E;font-size:14px;font-weight:600;padding:12px 24px;border-radius:14px;z-index:300;transition:transform .4s cubic-bezier(.32,.72,0,1);white-space:nowrap;max-width:88%;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.spacer{height:90px}
+.loading{text-align:center;padding:60px 20px;color:#6E6E7A;font-size:14px}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.an{animation:up .5s ease-out both}
+.a1{animation-delay:.04s}.a2{animation-delay:.08s}.a3{animation-delay:.12s}.a4{animation-delay:.16s}.a5{animation-delay:.2s}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="toast" id="toast"></div>
+<div class="header an a1"><div class="logo"><div class="logo-mark">NL</div><div class="logo-text">NovaLink</div></div></div>
+<div id="main"><div class="loading">読み込み中...</div></div>
+
+<div class="bottom-bar">
+  <button class="btn-buy" id="orderTrigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>追加注文</button>
+  <button class="btn-sell" id="withdrawTrigger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20M17 7l-5-5-5 5"/><path d="M19 15H5"/></svg>利益確定</button>
+</div>
+
+<!-- Buy sheet -->
+<div class="overlay" id="overlay"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-bar"></div>
+  <div class="sheet-title">追加注文</div>
+  <div class="sheet-sub">C種優先株式 · ¥32,000 / 株</div>
+  <div class="preset-grid">
+    <button class="preset" data-a="96000">¥96,000<span>3株</span></button>
+    <button class="preset" data-a="320000">¥320,000<span>10株</span></button>
+    <button class="preset" data-a="1600000">¥1,600,000<span>50株</span></button>
+    <button class="preset" data-a="3200000">¥3,200,000<span>100株</span></button>
+  </div>
+  <div class="custom-wrap"><label class="custom-label">株数を直接入力</label><input type="number" class="custom-input" id="inputShares" inputmode="numeric" placeholder="例: 25" min="1"></div>
+  <div class="detail-row"><span class="dk">注文株数</span><span class="dv" id="dShares">—</span></div>
+  <div class="detail-row"><span class="dk">注文金額</span><span class="dv" id="dAmount">—</span></div>
+  <button class="confirm-btn" id="confirmBtn" disabled>注文を確定する</button>
+</div>
+
+<!-- Withdraw sheet -->
+<div class="sheet" id="wdSheet">
+  <div class="sheet-bar"></div>
+  <div class="sheet-title">利益確定（出金）</div>
+  <div class="sheet-sub">現在の評価額を全額出金申請します</div>
+  <div class="detail-row"><span class="dk">評価額</span><span class="dv" id="wdVal">—</span></div>
+  <div class="detail-row"><span class="dk">投資額</span><span class="dv" id="wdDep">—</span></div>
+  <div class="detail-row"><span class="dk">利益</span><span class="dv" id="wdGain" style="color:#4ADE80">—</span></div>
+  <div class="wd-note">出金申請後、管理者の承認を経て出金手続きが完了します。</div>
+  <button class="wd-btn" id="wdBtn">出金を申請する</button>
+</div>
+
+</div>
+<script>
+var API=location.origin,PRICE=32000;
+var uid=null,selShares=0,currentData=null;
+function $(id){return document.getElementById(id)}
+function fY(n){return '\u00a5'+Math.round(n).toLocaleString('ja-JP')}
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(function(){t.classList.remove('on')},2800)}
+function getUID(){var m=document.cookie.match(/nluid=([^;]+)/);return m?m[1]:null}
+function setUID(id){document.cookie='nluid='+id+';path=/;max-age=31536000;SameSite=Lax'}
+async function api(p,o){o=o||{};var h=Object.assign({'Content-Type':'application/json'},o.headers||{});return(await fetch(API+p,Object.assign({},o,{headers:h}))).json()}
+
+// Sheet management
+function openSheet(id){$('overlay').classList.add('on');$(id).classList.add('on')}
+function closeAll(){$('overlay').classList.remove('on');$('sheet').classList.remove('on');$('wdSheet').classList.remove('on')}
+function resetBuySheet(){selShares=0;document.querySelectorAll('.preset').forEach(function(p){p.classList.remove('on')});$('inputShares').value='';$('dShares').textContent='\u2014';$('dAmount').textContent='\u2014';$('confirmBtn').disabled=true}
+function setSel(s){selShares=s;$('dShares').textContent=s.toLocaleString('ja-JP')+'\u682a';$('dAmount').textContent=fY(s*PRICE);$('confirmBtn').disabled=false}
+
+// Buy presets
+document.querySelectorAll('.preset').forEach(function(p){p.addEventListener('click',function(){document.querySelectorAll('.preset').forEach(function(x){x.classList.remove('on')});p.classList.add('on');$('inputShares').value='';setSel(Math.floor(parseInt(p.dataset.a)/PRICE))})});
+$('inputShares').addEventListener('input',function(){document.querySelectorAll('.preset').forEach(function(x){x.classList.remove('on')});var v=parseInt($('inputShares').value);if(v>0){setSel(v)}else{selShares=0;$('dShares').textContent='\u2014';$('dAmount').textContent='\u2014';$('confirmBtn').disabled=true}});
+
+$('overlay').addEventListener('click',closeAll);
+$('orderTrigger').addEventListener('click',function(){resetBuySheet();openSheet('sheet')});
+$('withdrawTrigger').addEventListener('click',function(){
+  if(!currentData||currentData.totalValue<=0||currentData.hasPendingWithdraw)return;
+  $('wdVal').textContent=fY(currentData.totalValue);
+  $('wdDep').textContent=fY(currentData.totalDeposited);
+  var g=currentData.totalValue-currentData.totalDeposited;
+  $('wdGain').textContent=(g>=0?'+':'')+fY(g);
+  $('wdGain').style.color=g>=0?'#4ADE80':'#F87171';
+  $('wdBtn').disabled=false;$('wdBtn').textContent='\u51fa\u91d1\u3092\u7533\u8acb\u3059\u308b';
+  openSheet('wdSheet');
+});
+
+// Confirm buy
+$('confirmBtn').addEventListener('click',async function(){
+  if(selShares<=0)return;$('confirmBtn').disabled=true;$('confirmBtn').textContent='\u9001\u4fe1\u4e2d...';
+  try{await api('/api/order',{method:'POST',body:JSON.stringify({uid:uid,amount:selShares*PRICE,shares:selShares})});closeAll();toast('\u6ce8\u6587\u3092\u53d7\u3051\u4ed8\u3051\u307e\u3057\u305f');setTimeout(load,500)}catch(e){toast('\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f')}
+  $('confirmBtn').textContent='\u6ce8\u6587\u3092\u78ba\u5b9a\u3059\u308b';
+});
+
+// Confirm withdraw
+$('wdBtn').addEventListener('click',async function(){
+  if(!currentData||currentData.totalValue<=0)return;
+  $('wdBtn').disabled=true;$('wdBtn').textContent='\u9001\u4fe1\u4e2d...';
+  try{await api('/api/withdraw',{method:'POST',body:JSON.stringify({uid:uid,amount:currentData.totalValue})});closeAll();toast('\u51fa\u91d1\u7533\u8acb\u3092\u53d7\u3051\u4ed8\u3051\u307e\u3057\u305f');setTimeout(load,500)}catch(e){toast(e.message||'\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f')}
+  $('wdBtn').textContent='\u51fa\u91d1\u3092\u7533\u8acb\u3059\u308b';
+});
+
+async function load(){
+  var d=await api('/api/portfolio?uid='+uid);
+  if(d.error==='user not found'){await api('/api/init',{method:'POST',body:JSON.stringify({uid:uid})});return load()}
+  currentData=d;
+  var up=d.gain>=0,pct=d.gainPct;
+  var arrow=up?'M18 15l-6-6-6 6':'M6 9l6 6 6-6';
+  var sign=up?'+':'';
+  var gainColor=up?'#4ADE80':'#F87171';
+  // Disable withdraw button if no value or pending
+  $('withdrawTrigger').disabled=(d.totalValue<=0||d.hasPendingWithdraw);
+  
+  var h='<div class="portfolio an a2"><div class="pf-label">\u8a55\u4fa1\u984d</div>';
+  h+='<div class="pf-amount"><span class="yen">\u00a5</span>'+d.totalValue.toLocaleString('ja-JP')+'</div>';
+  h+='<div class="pf-sub"><span class="pf-gain" style="color:'+gainColor+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="'+arrow+'"/></svg>'+sign+fY(d.gain)+'\uff08'+sign+pct+'%\uff09</span></div></div>';
+  h+='<div class="metrics an a3"><div class="m-card"><div class="m-label">\u6295\u8cc7\u984d</div><div class="m-val">'+fY(d.totalDeposited)+'</div><div class="m-note">\u5143\u672c</div></div>';
+  h+='<div class="m-card"><div class="m-label">\u542b\u307f\u76ca</div><div class="m-val" style="color:'+gainColor+'">'+fY(Math.abs(d.gain))+'</div><div class="m-note">'+sign+pct+'%</div></div></div>';
+  
+  if(d.totalValue>0){
+    h+='<div class="sec-head an a4">\u4fdd\u6709\u9298\u67c4</div><div class="holding an a4"><div class="h-icon">NL</div><div class="h-info"><div class="h-name">\u682a\u5f0f\u4f1a\u793e\u30ce\u30f4\u30a1\u30ea\u30f3\u30af</div><div class="h-detail">C\u7a2e\u512a\u5148\u682a\u5f0f</div></div>';
+    h+='<div class="h-right"><div class="h-val">'+fY(d.totalValue)+'</div><div class="h-pct" style="color:'+gainColor+'">'+sign+pct+'%</div></div></div>';
+  }
+  
+  if(d.withdrawn>0){
+    h+='<div class="metrics an a4" style="margin-top:10px"><div class="m-card" style="grid-column:1/-1"><div class="m-label">\u51fa\u91d1\u6e08\u307f</div><div class="m-val" style="color:#A78BFA">'+fY(d.withdrawn)+'</div></div></div>';
+  }
+  
+  if(d.orders&&d.orders.length>0){
+    h+='<div class="sec-head an a5">\u5c65\u6b74</div>';
+    for(var i=0;i<Math.min(d.orders.length,15);i++){
+      var o=d.orders[i];
+      var isWd=o.type==='withdraw';
+      var cls,lbl,ico;
+      if(isWd){
+        cls=o.status==='pending'?'withdraw pending':o.status==='approved'?'withdraw approved':'withdraw rejected';
+        lbl=o.status==='pending'?'\u53d7\u4ed8\u4e2d':o.status==='approved'?'\u51fa\u91d1\u6e08':'\u5374\u4e0b';
+        ico=o.status==='pending'?'\u23f3':o.status==='approved'?'\u2713':'\u2715';
+      } else {
+        cls=o.status==='pending'?'pending':o.status==='approved'?'approved':'rejected';
+        lbl=o.status==='pending'?'\u53d7\u4ed8\u4e2d':o.status==='approved'?'\u627f\u8a8d\u6e08':'\u5374\u4e0b';
+        ico=o.status==='pending'?'\u23f3':o.status==='approved'?'\u2713':'\u2715';
+      }
+      var title=isWd?'\u5229\u76ca\u78ba\u5b9a':'\u8ffd\u52a0\u6ce8\u6587';
+      var dt=new Date(o.createdAt);var ds=(dt.getMonth()+1)+'/'+dt.getDate()+' '+dt.getHours()+':'+String(dt.getMinutes()).padStart(2,'0');
+      var meta=isWd?ds:(o.shares?o.shares.toLocaleString()+'\u682a \u00b7 ':'')+ds;
+      h+='<div class="order-item"><div class="o-badge '+cls.split(' ')[0]+'">'+ico+'</div><div class="o-info"><div class="o-title">'+title+' \u00b7 '+lbl+'</div><div class="o-meta">'+meta+'</div></div><div class="o-amount">'+fY(o.amount)+'</div></div>';
+    }
+  }
+  h+='<div class="spacer"></div>';
+  $('main').innerHTML=h;
+}
+(async function(){uid=getUID();if(!uid){var r=await api('/api/init',{method:'POST',body:JSON.stringify({})});uid=r.uid;setUID(uid)}await load();setInterval(load,60000)})();
+</script>
+</body>
+</html>

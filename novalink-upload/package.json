@@ -1,0 +1,18 @@
+{
+  "name": "novalink-investor",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "deploy": "npm run build && npx wrangler deploy"
+  },
+  "cloudflare": {
+    "bindings": {
+      "kv_namespaces": {
+        "INVESTOR_KV": {
+          "description": "ユーザーデータと注文履歴を保存するKVストレージ"
+        }
+      }
+    }
+  }
+}

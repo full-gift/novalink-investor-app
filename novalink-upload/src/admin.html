@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#09090B">
+<title>NovaLink Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:#09090B!important;color:#EDEDEF;font-family:'Noto Sans JP',system-ui,sans-serif;min-height:100vh;font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:520px;margin:0 auto;padding:16px}
+.login{max-width:300px;margin:80px auto;text-align:center}
+.login h2{font-size:18px;margin-bottom:16px}
+.login input{width:100%;height:48px;padding:0 14px;background:#161619;border:1px solid #27272E;border-radius:10px;color:#EDEDEF;font-size:15px;outline:none;margin-bottom:12px}
+.login input:focus{border-color:#C5963A}
+.login button{width:100%;height:48px;background:linear-gradient(135deg,#C5963A,#DEB560);border:none;border-radius:10px;color:#0A0A0C;font-weight:700;font-size:15px;cursor:pointer}
+.admin-hd{display:flex;justify-content:space-between;align-items:center;padding:12px 0 16px;border-bottom:1px solid #222228;margin-bottom:20px}
+.admin-hd h1{font-size:17px;font-weight:700}
+.admin-hd h1 em{font-style:normal;background:linear-gradient(135deg,#C5963A,#DEB560);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.badge{font-size:12px;background:#EF4444;color:#fff;padding:2px 8px;border-radius:6px;font-weight:600;min-width:24px;text-align:center}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px}
+.stat{background:#111114;border:1px solid #222228;border-radius:12px;padding:14px 12px}
+.stat-l{font-size:10px;color:#6E6E7A;letter-spacing:.04em;margin-bottom:4px}
+.stat-v{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600}
+.tabs{display:flex;gap:0;border-bottom:1px solid #222228;margin-bottom:16px}
+.tab{padding:10px 20px;font-size:13px;font-weight:600;color:#6E6E7A;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent}
+.tab.on{color:#C5963A;border-bottom-color:#C5963A}
+.panel{display:none}.panel.on{display:block}
+.card{background:#111114;border:1px solid #222228;border-radius:14px;padding:16px;margin-bottom:10px}
+.card.wd{border-color:#3B2D6B}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.card-uid{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#C5963A}
+.card-status{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:600}
+.card-status.pending{background:rgba(251,191,36,.08);color:#FBBF24}
+.card-status.wd-pending{background:rgba(167,139,250,.08);color:#A78BFA}
+.card-type{font-size:11px;font-weight:600;margin-bottom:6px}
+.card-type.buy{color:#FBBF24}.card-type.withdraw{color:#A78BFA}
+.card-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:#8A8A96}
+.card-row .cv{color:#EDEDEF;font-family:'JetBrains Mono',monospace;font-weight:500}
+.card-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.btn-ok{height:44px;background:#22C55E;border:none;border-radius:10px;color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+.btn-ok:active{opacity:.85}
+.btn-ok.wd{background:#A78BFA}
+.btn-ng{height:44px;background:#222228;border:1px solid #333;border-radius:10px;color:#8A8A96;font-weight:600;font-size:14px;cursor:pointer}
+.btn-ng:active{background:#333}
+.u-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #1A1A1F}
+.u-id{font-family:'JetBrains Mono',monospace;font-size:12px;color:#C5963A;width:64px;flex-shrink:0}
+.u-info{flex:1;font-size:13px}.u-sub{font-size:11px;color:#6E6E7A;margin-top:1px}
+.u-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;text-align:right}
+.u-wd{font-size:11px;color:#A78BFA;margin-top:1px;text-align:right}
+.empty{text-align:center;padding:40px 20px;color:#52525B;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div id="loginView" class="login">
+  <h2>管理画面</h2>
+  <input type="password" id="passInput" placeholder="パスワード">
+  <button id="loginBtn">ログイン</button>
+</div>
+<div id="adminView" style="display:none">
+  <div class="admin-hd"><h1><em>NovaLink</em> Admin</h1><div class="badge" id="pBadge">0</div></div>
+  <div class="stats"><div class="stat"><div class="stat-l">ユーザー</div><div class="stat-v" id="sUsers">—</div></div><div class="stat"><div class="stat-l">承認待ち</div><div class="stat-v" id="sPend">—</div></div><div class="stat"><div class="stat-l">倍率</div><div class="stat-v" id="sMult">—</div></div></div>
+  <div class="tabs"><button class="tab on" data-p="pend">承認待ち</button><button class="tab" data-p="users">ユーザー</button></div>
+  <div class="panel on" id="panel-pend"></div>
+  <div class="panel" id="panel-users"></div>
+</div>
+</div>
+<script>
+var token='',API=location.origin;
+function $(id){return document.getElementById(id)}
+function fY(n){return '\u00a5'+Math.round(n).toLocaleString('ja-JP')}
+async function api(p,o){o=o||{};return(await fetch(API+p,Object.assign({},o,{headers:Object.assign({'Content-Type':'application/json','Authorization':'Bearer '+token},o.headers||{})}))).json()}
+$('loginBtn').addEventListener('click',async function(){token=$('passInput').value;var r=await api('/api/admin/settings');if(r.error){alert('\u30d1\u30b9\u30ef\u30fc\u30c9\u304c\u9055\u3044\u307e\u3059');return}$('loginView').style.display='none';$('adminView').style.display='block';$('sMult').textContent='\u00d7'+r.multiplier;loadAll()});
+$('passInput').addEventListener('keydown',function(e){if(e.key==='Enter')$('loginBtn').click()});
+document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('on')});t.classList.add('on');$('panel-'+t.dataset.p).classList.add('on')})});
+async function loadAll(){
+  var pend=await api('/api/admin/pending');$('sPend').textContent=pend.length;$('pBadge').textContent=pend.length;
+  var pp=$('panel-pend');
+  if(!pend.length){pp.innerHTML='<div class="empty">\u627f\u8a8d\u5f85\u3061\u306e\u7533\u8acb\u306f\u3042\u308a\u307e\u305b\u3093</div>'}
+  else{pp.innerHTML=pend.map(function(o){
+    var isWd=o.type==='withdraw';
+    var dt=new Date(o.createdAt);var ds=(dt.getMonth()+1)+'/'+dt.getDate()+' '+dt.getHours()+':'+String(dt.getMinutes()).padStart(2,'0');
+    var cardCls=isWd?' wd':'';
+    var statusCls=isWd?'wd-pending':'pending';
+    var typeLbl=isWd?'\u5229\u76ca\u78ba\u5b9a\uff08\u51fa\u91d1\uff09':'\u8ffd\u52a0\u6ce8\u6587';
+    var typeCls=isWd?'withdraw':'buy';
+    var btnCls=isWd?' wd':'';
+    var btnLbl=isWd?'\u51fa\u91d1\u627f\u8a8d':'\u627f\u8a8d';
+    var rows='';
+    if(isWd){rows='<div class="card-row"><span>\u51fa\u91d1\u984d</span><span class="cv" style="color:#A78BFA">'+fY(o.amount)+'</span></div>'}
+    else{rows='<div class="card-row"><span>\u682a\u6570</span><span class="cv">'+o.shares.toLocaleString()+'\u682a</span></div><div class="card-row"><span>\u91d1\u984d</span><span class="cv">'+fY(o.amount)+'</span></div>'}
+    return'<div class="card'+cardCls+'"><div class="card-top"><div class="card-uid">'+o.uid+'</div><div class="card-status '+statusCls+'">\u53d7\u4ed8\u4e2d</div></div><div class="card-type '+typeCls+'">'+typeLbl+'</div>'+rows+'<div class="card-row"><span>\u53d7\u4ed8</span><span class="cv">'+ds+'</span></div><div class="card-btns"><button class="btn-ok'+btnCls+'" data-id="'+o.orderId+'">'+btnLbl+'</button><button class="btn-ng" data-id="'+o.orderId+'">\u5374\u4e0b</button></div></div>'
+  }).join('');
+  pp.querySelectorAll('.btn-ok').forEach(function(b){b.addEventListener('click',async function(){b.textContent='...';b.disabled=true;await api('/api/admin/approve',{method:'POST',body:JSON.stringify({orderId:b.dataset.id})});loadAll()})});
+  pp.querySelectorAll('.btn-ng').forEach(function(b){b.addEventListener('click',async function(){b.textContent='...';b.disabled=true;await api('/api/admin/reject',{method:'POST',body:JSON.stringify({orderId:b.dataset.id})});loadAll()})});}
+  var users=await api('/api/admin/users');$('sUsers').textContent=users.length;
+  var up=$('panel-users');
+  if(!users.length){up.innerHTML='<div class="empty">\u30e6\u30fc\u30b6\u30fc\u306f\u3044\u307e\u305b\u3093</div>'}
+  else{up.innerHTML=users.map(function(u){var dt=new Date(u.createdAt);var wdHtml=u.withdrawn>0?'<div class="u-wd">\u51fa\u91d1\u6e08 '+fY(u.withdrawn)+'</div>':'';return'<div class="u-item"><div class="u-id">'+u.uid+'</div><div class="u-info"><div>\u6295\u8cc7 '+fY(u.totalDeposited)+'</div><div class="u-sub">'+(dt.getMonth()+1)+'/'+dt.getDate()+'\u301c</div></div><div style="text-align:right"><div class="u-val">'+fY(u.totalValue)+'</div>'+wdHtml+'</div></div>'}).join('')}
+}
+</script>
+</body>
+</html>

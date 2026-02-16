@@ -1,0 +1,11 @@
+{
+  "name": "novalink-investor-app",
+  "main": "dist/worker.js",
+  "compatibility_date": "2024-12-01",
+  "kv_namespaces": [
+    {
+      "binding": "INVESTOR_KV",
+      "id": "cb0229a6606d4d32835974ba4428cf47"
+    }
+  ]
+}
